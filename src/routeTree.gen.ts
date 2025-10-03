@@ -10,8 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UserRouteImport } from './routes/user'
-import { Route as FeedsRouteImport } from './routes/feeds'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FeedsIndexRouteImport } from './routes/feeds/index'
+import { Route as FeedsIdRouteImport } from './routes/feeds/$id'
 import { Route as EntriesIdRouteImport } from './routes/entries/$id'
 
 const UserRoute = UserRouteImport.update({
@@ -19,14 +20,19 @@ const UserRoute = UserRouteImport.update({
   path: '/user',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FeedsRoute = FeedsRouteImport.update({
-  id: '/feeds',
-  path: '/feeds',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedsIndexRoute = FeedsIndexRouteImport.update({
+  id: '/feeds/',
+  path: '/feeds/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedsIdRoute = FeedsIdRouteImport.update({
+  id: '/feeds/$id',
+  path: '/feeds/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EntriesIdRoute = EntriesIdRouteImport.update({
@@ -37,36 +43,40 @@ const EntriesIdRoute = EntriesIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/feeds': typeof FeedsRoute
   '/user': typeof UserRoute
   '/entries/$id': typeof EntriesIdRoute
+  '/feeds/$id': typeof FeedsIdRoute
+  '/feeds': typeof FeedsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/feeds': typeof FeedsRoute
   '/user': typeof UserRoute
   '/entries/$id': typeof EntriesIdRoute
+  '/feeds/$id': typeof FeedsIdRoute
+  '/feeds': typeof FeedsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/feeds': typeof FeedsRoute
   '/user': typeof UserRoute
   '/entries/$id': typeof EntriesIdRoute
+  '/feeds/$id': typeof FeedsIdRoute
+  '/feeds/': typeof FeedsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/feeds' | '/user' | '/entries/$id'
+  fullPaths: '/' | '/user' | '/entries/$id' | '/feeds/$id' | '/feeds'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/feeds' | '/user' | '/entries/$id'
-  id: '__root__' | '/' | '/feeds' | '/user' | '/entries/$id'
+  to: '/' | '/user' | '/entries/$id' | '/feeds/$id' | '/feeds'
+  id: '__root__' | '/' | '/user' | '/entries/$id' | '/feeds/$id' | '/feeds/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  FeedsRoute: typeof FeedsRoute
   UserRoute: typeof UserRoute
   EntriesIdRoute: typeof EntriesIdRoute
+  FeedsIdRoute: typeof FeedsIdRoute
+  FeedsIndexRoute: typeof FeedsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,18 +88,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/feeds': {
-      id: '/feeds'
-      path: '/feeds'
-      fullPath: '/feeds'
-      preLoaderRoute: typeof FeedsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feeds/': {
+      id: '/feeds/'
+      path: '/feeds'
+      fullPath: '/feeds'
+      preLoaderRoute: typeof FeedsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feeds/$id': {
+      id: '/feeds/$id'
+      path: '/feeds/$id'
+      fullPath: '/feeds/$id'
+      preLoaderRoute: typeof FeedsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/entries/$id': {
@@ -104,9 +121,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  FeedsRoute: FeedsRoute,
   UserRoute: UserRoute,
   EntriesIdRoute: EntriesIdRoute,
+  FeedsIdRoute: FeedsIdRoute,
+  FeedsIndexRoute: FeedsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

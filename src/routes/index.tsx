@@ -27,9 +27,9 @@ const getFeedIds = (entries:any) => {
 
 function Index() {
     const params = useParamStore()
-    const {page, ...searchParams} = params
-    if(params.page !== 'entries') {
-        params.resetParams('entries')
+    const {page, resetParams, ...searchParams} = params
+    if(page !== 'entries') {
+        resetParams('entries')
     }
     const { isPending, error, data } = useQuery({
         queryKey: ['entries', searchParams],
@@ -42,10 +42,10 @@ function Index() {
             }
         },
         placeholderData: keepPreviousData,
-        enabled: params.page === 'entries'
+        enabled: page === 'entries'
     })
     if (isPending) return <div>Loading...</div>
-    if (error) return <div className='prose'>
+    if (error) return <div className='prose prose-slate'>
         <h1>{error.name}</h1>
         <p>{error.message}</p>
     </div>

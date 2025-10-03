@@ -3,7 +3,7 @@ import { createRootRoute, HeadContent, Link, Outlet } from '@tanstack/react-rout
 export const Route = createRootRoute({
     head: () => ({
         meta: [
-            { title: "Unread | Fluxxy" }
+            { title: "Fluxxy" }
         ]
     }),
     component: () => (

@@ -3,6 +3,7 @@ import EntriesPagination from '@/components/EntriesPagination'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import useParamStore from '@/store/useParamStore'
 import { Link } from '@tanstack/react-router'
+import dayjs from 'dayjs'
 
 export default function Entries({ data }:any) {
     const params = useParamStore()
@@ -56,7 +57,7 @@ export default function Entries({ data }:any) {
                                     <div>
                                         {entry.feed.title}
                                     </div>
-                                    <div>{entry.published_at}</div>
+                                    <div>{dayjs(entry.published_at).format('DD/MM/YY HH:mm')}</div>
                                 </CardDescription>
                             </CardHeader>
                         </Card>

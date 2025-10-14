@@ -8,8 +8,8 @@ import dayjs from 'dayjs'
 export default function Entries({ data }:any) {
     const params = useParamStore()
     return (
-        <div className='container mb-10'>
-            <div className='flex justify-between py-2'>
+        <div className='container mb-4'>
+            <div className='flex justify-between pb-2'>
                 <Select
                     value={params.order}
                     onValueChange={(value) => {
@@ -46,7 +46,7 @@ export default function Entries({ data }:any) {
                     </SelectContent>
                 </Select>
             </div>
-            <div className='flex flex-col gap-1.5'>
+            <div className='flex flex-col gap-2'>
                 {data?.entries?.map((entry: any) => {
                     return (
                         <Card key={entry.id}>

@@ -1,30 +1,30 @@
 import Entries from '@/components/Entries'
 import { api } from '@/lib/api'
 import useParamStore from '@/store/useParamStore'
-import { useQuery, keepPreviousData } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/feeds/$id')({
+export const Route = createFileRoute('/categories/$id')({
     component: RouteComponent,
 })
 
 function RouteComponent() {
     const { id } = Route.useParams()
     const { page, resetParams, ...searchParams } = useParamStore()
-    if(page !== `feeds/${id}`) {
-        resetParams(`feeds/${id}`)
+    if (page !== `categories/${id}`) {
+        resetParams(`categories/${id}`)
     }
     const { isPending, error, data } = useQuery({
-        queryKey:[`feeds/${id}`, searchParams],
-        queryFn: () => api.getFeedEntries({id, ...searchParams}),
+        queryKey: [`categories/${id}`, searchParams],
+        queryFn: () => api.getCategoryEntries({id, ...searchParams}),
         select: (data) => {
             return {
                 ...data,
-                pagesTotal: Math.ceil(data.total/20)
+                pagesTotal: Math.ceil(data.total / 20)
             }
         },
         placeholderData: keepPreviousData,
-        enabled: page === `feeds/${id}`
+        enabled: page === `categories/${id}`
     })
 
     if(isPending) return <div>Loading...</div>

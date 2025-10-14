@@ -33,7 +33,7 @@ function RouteComponent() {
                 <div className='flex justify-between items-start gap-6 text-slate-400 text-sm'>
                     <div>{data.feed.title}{data.author ? <><br/><span className='italic'>{data.author}</span></> : ''}</div>
                     {/* <div className='w-fit'>{publishDate.format('DD/MM/YY HH:mm')}</div> */}
-                    <div className='w-fit'>{dayjs(data.published_at).format('DD/MM/YY HH:mm')}</div>
+                    <div className='min-w-max'>{dayjs(data.published_at).format('DD/MM/YY HH:mm')}</div>
                 </div>
                 <div dangerouslySetInnerHTML={{__html: data.content}}/>
                 <div className='flex flex-col gap-2'>

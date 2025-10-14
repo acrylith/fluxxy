@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UserRouteImport } from './routes/user'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FeedsIndexRouteImport } from './routes/feeds/index'
+import { Route as CategoriesIndexRouteImport } from './routes/categories/index'
 import { Route as FeedsIdRouteImport } from './routes/feeds/$id'
 import { Route as EntriesIdRouteImport } from './routes/entries/$id'
+import { Route as CategoriesIdRouteImport } from './routes/categories/$id'
 
 const UserRoute = UserRouteImport.update({
   id: '/user',
@@ -30,6 +32,11 @@ const FeedsIndexRoute = FeedsIndexRouteImport.update({
   path: '/feeds/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
+  id: '/categories/',
+  path: '/categories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeedsIdRoute = FeedsIdRouteImport.update({
   id: '/feeds/$id',
   path: '/feeds/$id',
@@ -40,42 +47,77 @@ const EntriesIdRoute = EntriesIdRouteImport.update({
   path: '/entries/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriesIdRoute = CategoriesIdRouteImport.update({
+  id: '/categories/$id',
+  path: '/categories/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/user': typeof UserRoute
+  '/categories/$id': typeof CategoriesIdRoute
   '/entries/$id': typeof EntriesIdRoute
   '/feeds/$id': typeof FeedsIdRoute
+  '/categories': typeof CategoriesIndexRoute
   '/feeds': typeof FeedsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/user': typeof UserRoute
+  '/categories/$id': typeof CategoriesIdRoute
   '/entries/$id': typeof EntriesIdRoute
   '/feeds/$id': typeof FeedsIdRoute
+  '/categories': typeof CategoriesIndexRoute
   '/feeds': typeof FeedsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/user': typeof UserRoute
+  '/categories/$id': typeof CategoriesIdRoute
   '/entries/$id': typeof EntriesIdRoute
   '/feeds/$id': typeof FeedsIdRoute
+  '/categories/': typeof CategoriesIndexRoute
   '/feeds/': typeof FeedsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/user' | '/entries/$id' | '/feeds/$id' | '/feeds'
+  fullPaths:
+    | '/'
+    | '/user'
+    | '/categories/$id'
+    | '/entries/$id'
+    | '/feeds/$id'
+    | '/categories'
+    | '/feeds'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/user' | '/entries/$id' | '/feeds/$id' | '/feeds'
-  id: '__root__' | '/' | '/user' | '/entries/$id' | '/feeds/$id' | '/feeds/'
+  to:
+    | '/'
+    | '/user'
+    | '/categories/$id'
+    | '/entries/$id'
+    | '/feeds/$id'
+    | '/categories'
+    | '/feeds'
+  id:
+    | '__root__'
+    | '/'
+    | '/user'
+    | '/categories/$id'
+    | '/entries/$id'
+    | '/feeds/$id'
+    | '/categories/'
+    | '/feeds/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   UserRoute: typeof UserRoute
+  CategoriesIdRoute: typeof CategoriesIdRoute
   EntriesIdRoute: typeof EntriesIdRoute
   FeedsIdRoute: typeof FeedsIdRoute
+  CategoriesIndexRoute: typeof CategoriesIndexRoute
   FeedsIndexRoute: typeof FeedsIndexRoute
 }
 
@@ -102,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeedsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categories/': {
+      id: '/categories/'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof CategoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/feeds/$id': {
       id: '/feeds/$id'
       path: '/feeds/$id'
@@ -116,14 +165,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EntriesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categories/$id': {
+      id: '/categories/$id'
+      path: '/categories/$id'
+      fullPath: '/categories/$id'
+      preLoaderRoute: typeof CategoriesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   UserRoute: UserRoute,
+  CategoriesIdRoute: CategoriesIdRoute,
   EntriesIdRoute: EntriesIdRoute,
   FeedsIdRoute: FeedsIdRoute,
+  CategoriesIndexRoute: CategoriesIndexRoute,
   FeedsIndexRoute: FeedsIndexRoute,
 }
 export const routeTree = rootRouteImport

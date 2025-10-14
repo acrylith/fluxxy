@@ -22,14 +22,29 @@ const api = {
     },
     getFeeds: () => {
         const data = fetch(`${basePath}/feeds`, {
-        method: 'GET',
-        headers: headers
+            method: 'GET',
+            headers: headers
         }).then(res => res.json())
         return data
     },
     getFeedEntries: (params: any) => {
         const { id, offset, order, direction } = params
         const data = fetch(`${basePath}/feeds/${id}/entries?limit=20&offset=${offset}&order=${order}&direction=${direction}`, {
+            method: 'GET',
+            headers: headers
+        }).then(res => res.json())
+        return data
+    },
+    getCategories: () => {
+        const data = fetch(`${basePath}/categories?counts=true`, {
+            method: 'GET',
+            headers: headers
+        }).then(res => res.json())
+        return data
+    },
+    getCategoryEntries: (params: any) => {
+        const { id, offset, order, direction } = params
+        const data = fetch(`${basePath}/categories/${id}/entries?limit=20&offset=${offset}&order=${order}&direction=${direction}`, {
             method: 'GET',
             headers: headers
         }).then(res => res.json())

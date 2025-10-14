@@ -2,12 +2,16 @@ import { create } from "zustand"
 
 interface paramState {
     theme: string,
+    sidebarOpened: boolean,
     setTheme: (by:string) => void
+    sidebarToggle: () => void
 }
 
 const appSettingsStore = (set:any) => ({
     theme: "dark",
-    setTheme: (value:string) => set({ theme: value })
+    sidebarOpened: false,
+    setTheme: (value:string) => set({ theme: value }),
+    sidebarToggle: () => set((state: paramState) => ({ ...state, sidebarOpened: !state.sidebarOpened }))
 })
 
 const useAppSettings = create<paramState>(appSettingsStore)

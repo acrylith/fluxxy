@@ -124,6 +124,7 @@ body {
     @apply border-border outline-ring/50;
     }
   body {
+    padding-top: 48px !important;
     @apply bg-background text-foreground;
     }
 }
@@ -139,8 +140,6 @@ article {
 }
 
 [aria-label*="Open TanStack Router Devtools"] {
-    z-index: 10 !important;
-    svg {
-        display: none;
-    }
+    /* z-index: 10 !important; */
+    display: none !important;
 }

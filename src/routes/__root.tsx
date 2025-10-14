@@ -1,4 +1,5 @@
-import { createRootRoute, HeadContent, Link, Outlet } from '@tanstack/react-router'
+import SideMenu from '@/components/SideMenu'
+import { createRootRoute, HeadContent, Outlet } from '@tanstack/react-router'
 
 export const Route = createRootRoute({
     head: () => ({
@@ -9,11 +10,7 @@ export const Route = createRootRoute({
     component: () => (
         <>
             <HeadContent />
-            <nav className='flex justify-around items-center fixed bottom-0 w-full h-10 z-100 bg-slate-950'>
-                <Link to="/">Home</Link>
-                <Link to="/feeds">Feeds</Link>
-                <Link to="/user">User</Link>
-            </nav>
+            <SideMenu />
             <Outlet />
         </>
     ),

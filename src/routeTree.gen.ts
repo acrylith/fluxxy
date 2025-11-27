@@ -13,9 +13,10 @@ import { Route as UserRouteImport } from './routes/user'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FeedsIndexRouteImport } from './routes/feeds/index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories/index'
-import { Route as FeedsIdRouteImport } from './routes/feeds/$id'
 import { Route as EntriesIdRouteImport } from './routes/entries/$id'
 import { Route as CategoriesIdRouteImport } from './routes/categories/$id'
+import { Route as FeedsIdIndexRouteImport } from './routes/feeds/$id/index'
+import { Route as FeedsIdEntriesIndexRouteImport } from './routes/feeds/$id/entries/index'
 
 const UserRoute = UserRouteImport.update({
   id: '/user',
@@ -37,11 +38,6 @@ const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
   path: '/categories/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FeedsIdRoute = FeedsIdRouteImport.update({
-  id: '/feeds/$id',
-  path: '/feeds/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const EntriesIdRoute = EntriesIdRouteImport.update({
   id: '/entries/$id',
   path: '/entries/$id',
@@ -52,24 +48,36 @@ const CategoriesIdRoute = CategoriesIdRouteImport.update({
   path: '/categories/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedsIdIndexRoute = FeedsIdIndexRouteImport.update({
+  id: '/feeds/$id/',
+  path: '/feeds/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedsIdEntriesIndexRoute = FeedsIdEntriesIndexRouteImport.update({
+  id: '/feeds/$id/entries/',
+  path: '/feeds/$id/entries/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/user': typeof UserRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/entries/$id': typeof EntriesIdRoute
-  '/feeds/$id': typeof FeedsIdRoute
   '/categories': typeof CategoriesIndexRoute
   '/feeds': typeof FeedsIndexRoute
+  '/feeds/$id': typeof FeedsIdIndexRoute
+  '/feeds/$id/entries': typeof FeedsIdEntriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/user': typeof UserRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/entries/$id': typeof EntriesIdRoute
-  '/feeds/$id': typeof FeedsIdRoute
   '/categories': typeof CategoriesIndexRoute
   '/feeds': typeof FeedsIndexRoute
+  '/feeds/$id': typeof FeedsIdIndexRoute
+  '/feeds/$id/entries': typeof FeedsIdEntriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,9 +85,10 @@ export interface FileRoutesById {
   '/user': typeof UserRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/entries/$id': typeof EntriesIdRoute
-  '/feeds/$id': typeof FeedsIdRoute
   '/categories/': typeof CategoriesIndexRoute
   '/feeds/': typeof FeedsIndexRoute
+  '/feeds/$id/': typeof FeedsIdIndexRoute
+  '/feeds/$id/entries/': typeof FeedsIdEntriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,27 +97,30 @@ export interface FileRouteTypes {
     | '/user'
     | '/categories/$id'
     | '/entries/$id'
-    | '/feeds/$id'
     | '/categories'
     | '/feeds'
+    | '/feeds/$id'
+    | '/feeds/$id/entries'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/user'
     | '/categories/$id'
     | '/entries/$id'
-    | '/feeds/$id'
     | '/categories'
     | '/feeds'
+    | '/feeds/$id'
+    | '/feeds/$id/entries'
   id:
     | '__root__'
     | '/'
     | '/user'
     | '/categories/$id'
     | '/entries/$id'
-    | '/feeds/$id'
     | '/categories/'
     | '/feeds/'
+    | '/feeds/$id/'
+    | '/feeds/$id/entries/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,9 +128,10 @@ export interface RootRouteChildren {
   UserRoute: typeof UserRoute
   CategoriesIdRoute: typeof CategoriesIdRoute
   EntriesIdRoute: typeof EntriesIdRoute
-  FeedsIdRoute: typeof FeedsIdRoute
   CategoriesIndexRoute: typeof CategoriesIndexRoute
   FeedsIndexRoute: typeof FeedsIndexRoute
+  FeedsIdIndexRoute: typeof FeedsIdIndexRoute
+  FeedsIdEntriesIndexRoute: typeof FeedsIdEntriesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -151,13 +164,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/feeds/$id': {
-      id: '/feeds/$id'
-      path: '/feeds/$id'
-      fullPath: '/feeds/$id'
-      preLoaderRoute: typeof FeedsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/entries/$id': {
       id: '/entries/$id'
       path: '/entries/$id'
@@ -172,6 +178,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feeds/$id/': {
+      id: '/feeds/$id/'
+      path: '/feeds/$id'
+      fullPath: '/feeds/$id'
+      preLoaderRoute: typeof FeedsIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feeds/$id/entries/': {
+      id: '/feeds/$id/entries/'
+      path: '/feeds/$id/entries'
+      fullPath: '/feeds/$id/entries'
+      preLoaderRoute: typeof FeedsIdEntriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -180,9 +200,10 @@ const rootRouteChildren: RootRouteChildren = {
   UserRoute: UserRoute,
   CategoriesIdRoute: CategoriesIdRoute,
   EntriesIdRoute: EntriesIdRoute,
-  FeedsIdRoute: FeedsIdRoute,
   CategoriesIndexRoute: CategoriesIndexRoute,
   FeedsIndexRoute: FeedsIndexRoute,
+  FeedsIdIndexRoute: FeedsIdIndexRoute,
+  FeedsIdEntriesIndexRoute: FeedsIdEntriesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

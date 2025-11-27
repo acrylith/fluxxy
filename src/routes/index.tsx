@@ -15,11 +15,11 @@ export const Route = createFileRoute('/')({
     // }
 })
 
-const getFeedIds = (entries:any) => {
+const getIconIds = (entries:any) => {
     const ids:any = []
-    entries.map((entry:any) => {
-        if(!ids.includes(entry.feed.id)) {
-            ids.push(entry.feed.id)
+    entries.map((entry: any) => {
+        if(!ids.includes(entry.feed.icon.icon_id)) {
+            ids.push(entry.feed.icon.icon_id)
         }
     })
     return ids
@@ -38,7 +38,7 @@ function Index() {
             return {
                 ...data,
                 pagesTotal: Math.ceil(data.total/20),
-                feedIds: getFeedIds(data.entries)
+                iconIds: getIconIds(data.entries)
             }
         },
         placeholderData: keepPreviousData,

@@ -51,13 +51,17 @@ export default function Entries({ data }:any) {
                     return (
                         <Card key={entry.id}>
                             <CardHeader>
-                                {/* <CardTitle><a href={entry.url} target='_blank'>{entry.title}</a></CardTitle> */}
-                                <CardTitle><Link to='/entries/$id' params={{ id: entry.id }}>{entry.title}</Link></CardTitle>
+                                <CardTitle className='mb-2'><Link to='/entries/$id' params={{ id: entry.id }}>{entry.title}</Link></CardTitle>
                                 <CardDescription className='flex justify-between'>
-                                    <div>
+                                    <div className='w-fit flex content-center gap-3'>
+                                        {entry.feed.icon.data ? 
+                                            <span className='w-6 h-6 inline-block rounded-sm overflow-hidden'>
+                                                <img className='w-full h-full' src={`data:${entry.feed.icon.data}`} alt={`${entry.feed.title} logo`} />
+                                            </span> : null
+                                        }
                                         {entry.feed.title}
                                     </div>
-                                    <div>{dayjs(entry.published_at).format('DD/MM/YY HH:mm')}</div>
+                                    <div className='min-w-max'>{dayjs(entry.published_at).format('DD/MM/YY HH:mm')}</div>
                                 </CardDescription>
                             </CardHeader>
                         </Card>

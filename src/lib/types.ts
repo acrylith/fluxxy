@@ -1,3 +1,9 @@
+export type Icon = {
+    id: number;
+    data: string;
+    mime_type: string
+}
+
 export type FeedIcon = {
   feed_id: number;
   icon_id: number;

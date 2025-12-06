@@ -16,7 +16,7 @@ function RouteComponent() {
     }
     const { isPending, error, data } = useQuery({
         queryKey:[`feeds/${id}/entries`, searchParams],
-        queryFn: () => api.getFeedEntries({id, ...searchParams}),
+        queryFn: () => api.feeds.getEntries({id, ...searchParams}),
         select: (data) => {
             return {
                 ...data,

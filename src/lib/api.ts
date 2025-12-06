@@ -1,11 +1,18 @@
 import { idxDB } from "./indexeddb"
-import type { FeedIcon } from "./types"
+import axios from "axios"
+import type { FeedIcon, Icon } from "./types"
 
 const basePath = import.meta.env.VITE_API_ENTRY
 const headers = {
     'X-Auth-Token': import.meta.env.VITE_API_KEY
 }
 // const token = import.meta.env.VITE_API_KEY
+
+const baseApi = axios.create({
+    baseURL: basePath,
+    timeout: 10000,
+    headers: { 'X-Auth-Token': import.meta.env.VITE_API_KEY }
+})
 
 const getIconIds = (data:any) => {
     const ids:any = []
@@ -35,14 +42,61 @@ async function pushIcons(data:any) {
 }
 
 const api = {
-    feed: {
-        create: async (params:any) => {
-            const data = fetch(`${basePath}/feeds`, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(params)
+    feeds: {
+        get: async (id: string) => {
+            const data = fetch(`${basePath}/feeds/${id}`, {
+                method: 'GET',
+                headers: headers
             }).then(res => res.json())
             return data
+        },
+        getAll: async () => {
+            const data = fetch(`${basePath}/feeds`, {
+                method: 'GET',
+                headers: headers
+            }).then(res => res.json())
+            return data
+        },
+        getEntries: async (params: any) => {
+            const { id, offset, order, direction } = params
+            const data = fetch(`${basePath}/feeds/${id}/entries?limit=20&offset=${offset}&order=${order}&direction=${direction}`, {
+                method: 'GET',
+                headers: headers
+            }).then(res => res.json())
+            .then(res => pushIcons(res))
+            return data
+        },
+        create: async (params:any) => {
+            try {
+                // const feedData = await baseApi.post('/feeds', params, { headers: { 'Content-Type': 'application/json' } })
+                const feedData = await baseApi.post('/feeds', params)
+                try {
+                    const iconData = await baseApi.get(`/feeds/${feedData.data.feed_id}/icon`)
+                    console.log(iconData)
+                    await idxDB.icons.add({
+                        id: iconData.data.id,
+                        data: iconData.data.data,
+                        mime_type: iconData.data.mime_type
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+                return feedData
+            } catch (error) {
+                console.log(error)
+                throw error
+            }
+        },
+        delete: async (params: {id:number, iconId:number}) => {
+            const { id, iconId } = params
+            try {
+                const deletedFeed = await baseApi.delete(`/feeds/${id}`)
+                await idxDB.icons.delete(iconId)
+                return deletedFeed
+            } catch (error) {
+                console.log(error)
+                throw error
+            }
         }
     },
     getEntries: async (params:any) => {
@@ -61,29 +115,29 @@ const api = {
         }).then(res => res.json())
         return data
     },
-    getFeeds: () => {
-        const data = fetch(`${basePath}/feeds`, {
-            method: 'GET',
-            headers: headers
-        }).then(res => res.json())
-        return data
-    },
-    getFeed: (id: string) => {
-        const data = fetch(`${basePath}/feeds/${id}`, {
-            method: 'GET',
-            headers: headers
-        }).then(res => res.json())
-        return data
-    },
-    getFeedEntries: (params: any) => {
-        const { id, offset, order, direction } = params
-        const data = fetch(`${basePath}/feeds/${id}/entries?limit=20&offset=${offset}&order=${order}&direction=${direction}`, {
-            method: 'GET',
-            headers: headers
-        }).then(res => res.json())
-        .then(res => pushIcons(res))
-        return data
-    },
+    // getFeeds: () => {
+    //     const data = fetch(`${basePath}/feeds`, {
+    //         method: 'GET',
+    //         headers: headers
+    //     }).then(res => res.json())
+    //     return data
+    // },
+    // getFeed: (id: string) => {
+    //     const data = fetch(`${basePath}/feeds/${id}`, {
+    //         method: 'GET',
+    //         headers: headers
+    //     }).then(res => res.json())
+    //     return data
+    // },
+    // getFeedEntries: (params: any) => {
+    //     const { id, offset, order, direction } = params
+    //     const data = fetch(`${basePath}/feeds/${id}/entries?limit=20&offset=${offset}&order=${order}&direction=${direction}`, {
+    //         method: 'GET',
+    //         headers: headers
+    //     }).then(res => res.json())
+    //     .then(res => pushIcons(res))
+    //     return data
+    // },
     getCategories: () => {
         const data = fetch(`${basePath}/categories?counts=true`, {
             method: 'GET',

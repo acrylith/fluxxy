@@ -11,7 +11,7 @@ export const Route = createFileRoute('/feeds/$id/')({
 
 function RouteComponent() {
     const { id } = Route.useParams()
-    const { isPending, error, data } = useQuery<Feed>({ queryKey: [`feeds/${id}`], queryFn: () => api.getFeed(id) })
+    const { isPending, error, data } = useQuery<Feed>({ queryKey: [`feeds/${id}`], queryFn: () => api.feeds.get(id) })
     const icon = useQuery({
         queryKey: [`icon/${data?.icon.icon_id}`],
         queryFn: () => api.getIconByID(data?.icon.icon_id),

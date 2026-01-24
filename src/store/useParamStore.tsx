@@ -57,6 +57,6 @@ const paramStore = (set:any) => ({
 const useParamStore = create<State & Actions>()(
     zukeeper(paramStore)
 )
-window.store = useParamStore
+// window.store = useParamStore
 
 export default useParamStore

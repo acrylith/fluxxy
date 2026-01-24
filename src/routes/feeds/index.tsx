@@ -5,7 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
@@ -15,7 +15,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from 'sonner'
 import type { AxiosError } from 'axios'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import type { Feed } from '@/lib/types'
+import { Pen } from 'lucide-react'
 
 export const Route = createFileRoute('/feeds/')({
     head: () => ({ meta:[{ title: "Feeds | Fluxxy" }] }),
@@ -23,17 +24,17 @@ export const Route = createFileRoute('/feeds/')({
 })
 
 function RouteComponent() {
-    const queryClient = useQueryClient()
-    const deleteMutation = useMutation({
-        mutationKey: ['deleteFeed'],
-        mutationFn: (params: {id:number, iconId:number}) => api.feeds.delete(params),
-        onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: ['feeds'] })
-        },
-        onError : (error:AxiosError) => {
-            toast.error(`${error.status} : ${error.code}`, { description: error.message })
-        }
-    })
+    // const queryClient = useQueryClient()
+    // const deleteMutation = useMutation({
+    //     mutationKey: ['deleteFeed'],
+    //     mutationFn: (params: {id:number, iconId:number}) => api.feeds.delete(params),
+    //     onSuccess: async () => {
+    //         queryClient.invalidateQueries({ queryKey: ['feeds'] })
+    //     },
+    //     onError : (error:AxiosError) => {
+    //         toast.error(`${error.status} : ${error.code}`, { description: error.message })
+    //     }
+    // })
     const { data, error, isPending } = useQuery({ queryKey: ['feeds'], queryFn: api.feeds.getAll })
     if (isPending) return <div>Loading...</div>
     if (error) return <div>Some error occured, check console</div>
@@ -49,15 +50,20 @@ function RouteComponent() {
                         </div>
                     </div>
                     <div className='flex flex-col gap-1.5'>
-                        {data?.map((feed:any) => {
+                        {data?.map((feed:Feed) => {
                             return (
-                                <Card key={feed.id}>
-                                    <CardHeader>
-                                        <CardTitle className='text-xl'><Link to='/feeds/$id/entries' params={{ id: feed.id }}>{feed.title}</Link></CardTitle>
+                                <Card key={feed.id} className='gap-4'>
+                                    <CardHeader className='flex justify-between items-center'>
+                                        <CardTitle className='text-xl'>
+                                            <Link to='/feeds/$id/entries' params={{ id: feed.id.toString() }}>{feed.title}</Link>
+                                        </CardTitle>
+                                        <Button asChild variant='outline'>
+                                            <Link className='underline' to='/feeds/$id' params={{ id: feed.id.toString() }}><Pen /></Link>
+                                        </Button>
                                     </CardHeader>
-                                    <CardContent className='flex justify-between items-baseline'>
-                                        <Link className='underline' to='/feeds/$id' params={{ id: feed.id }}>Edit</Link>
-                                        <Dialog>
+                                    <CardContent className='text-slate-400'>
+                                        {feed.description}
+                                        {/* <Dialog>
                                             <DialogTrigger asChild>
                                                 <Button variant='destructive'>Delete</Button>
                                             </DialogTrigger>
@@ -74,7 +80,7 @@ function RouteComponent() {
                                                     </Button>
                                                 </div>
                                             </DialogContent>
-                                        </Dialog>
+                                        </Dialog> */}
                                     </CardContent>
                                 </Card>
                             )
@@ -102,8 +108,10 @@ const CreeateDrawer = () => {
             toast.error(`${error.status} : ${error.code}`, { description: error.message })
         }
     })
+    // @ts-ignore
     const [ result, submitAction, isPending ] = useActionState((
-        async (previoustState:any, formData:any) => {
+        // @ts-ignore
+        async (previoustState:any, formData: any) => {
             const rawData = Object.fromEntries(formData)
             let cleanedData = Object.keys(rawData).reduce((acc:any, key) => {
                 let value = rawData[key];

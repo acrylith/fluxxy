@@ -1,6 +1,6 @@
 import { idxDB } from "./indexeddb"
 import axios from "axios"
-import type { FeedIcon, Icon } from "./types"
+import type { createFeed, FeedIcon, updateFeed } from "./types"
 
 const basePath = import.meta.env.VITE_API_ENTRY
 const headers = {
@@ -66,7 +66,25 @@ const api = {
             .then(res => pushIcons(res))
             return data
         },
-        create: async (params:any) => {
+        refresh: async (id:number) => {
+            try {
+                const response = await baseApi.put(`/feeds/${id}/refresh`)
+                return response
+            } catch (error) {
+                console.log(error)
+                throw error
+            }
+        },
+        markAsRead: async (id:number) => {
+            try {
+                const response = await baseApi.put(`/feeds/${id}/mark-all-as-read`)
+                return response
+            } catch (error) {
+                console.log(error)
+                throw error
+            }
+        },
+        create: async (params:createFeed) => {
             try {
                 // const feedData = await baseApi.post('/feeds', params, { headers: { 'Content-Type': 'application/json' } })
                 const feedData = await baseApi.post('/feeds', params)
@@ -82,6 +100,15 @@ const api = {
                     console.log(error)
                 }
                 return feedData
+            } catch (error) {
+                console.log(error)
+                throw error
+            }
+        },
+        update: async (params:{feedId:number, formData:updateFeed}) => {
+            try {
+                const updatedFeed = await baseApi.put(`/feeds/${params.feedId}`, params.formData)
+                return updatedFeed
             } catch (error) {
                 console.log(error)
                 throw error

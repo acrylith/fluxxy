@@ -130,7 +130,7 @@ body {
 }
 
 .container {
-    @apply px-2.5 mx-auto
+    @apply px-2.5 mx-auto sm:w-[540px] md:w-[720px] lg:w-[960px] xl:w-[1140px] 2xl:w-[1320px]
 }
 
 article {

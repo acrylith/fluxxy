@@ -82,7 +82,7 @@ function RouteComponent() {
                                 }
                             </div>
                             <div className='flex flex-wrap justify-evenly items-center gap-4 mb-6'>
-                                <h1 className='text-4xl font-semibold'>
+                                <h1 className='text-4xl font-semibold text-center'>
                                     {data.title}
                                 </h1>
                                 <Badge asChild className='text-2xl' variant='secondary'>
@@ -90,7 +90,8 @@ function RouteComponent() {
                                     <Link to='/categories/$id' params={{ id: data.category.id.toString() }}>{data.category.title}</Link>
                                 </Badge>
                             </div>
-                            <p className='text-lg text-center mb-6'>{data.description}</p>
+                            {/* <p className='text-lg text-center mb-6'>{data.description}</p> */}
+                            <div className='mb-4' dangerouslySetInnerHTML={{__html: data.description}}/>
                             <div className='flex gap-4 justify-center flex-wrap'>
                                 <Button asChild size='sm'>
                                     <Link to='/feeds/$id/entries' params={{ id: data.id.toString() }}>

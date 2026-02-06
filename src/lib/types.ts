@@ -9,6 +9,7 @@ export type FeedIcon = {
   icon_id: number;
   mime_type?: string;
   external_icon_id: string;
+  data?: string
 };
 
 export type FeedCategory = {

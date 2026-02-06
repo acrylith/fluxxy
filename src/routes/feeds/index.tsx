@@ -24,17 +24,6 @@ export const Route = createFileRoute('/feeds/')({
 })
 
 function RouteComponent() {
-    // const queryClient = useQueryClient()
-    // const deleteMutation = useMutation({
-    //     mutationKey: ['deleteFeed'],
-    //     mutationFn: (params: {id:number, iconId:number}) => api.feeds.delete(params),
-    //     onSuccess: async () => {
-    //         queryClient.invalidateQueries({ queryKey: ['feeds'] })
-    //     },
-    //     onError : (error:AxiosError) => {
-    //         toast.error(`${error.status} : ${error.code}`, { description: error.message })
-    //     }
-    // })
     const { data, error, isPending } = useQuery({ queryKey: ['feeds'], queryFn: api.feeds.getAll })
     if (isPending) return <div>Loading...</div>
     if (error) return <div>Some error occured, check console</div>
@@ -53,35 +42,22 @@ function RouteComponent() {
                         {data?.map((feed:Feed) => {
                             return (
                                 <Card key={feed.id} className='gap-4'>
-                                    <CardHeader className='flex justify-between items-center'>
-                                        <CardTitle className='text-xl'>
+                                    <CardHeader className='flex justify-between items-center gap-4'>
+                                        <CardTitle className='text-xl flex gap-4 items-center'>
+                                            {feed.icon.data ?
+                                                <span className='w-6 h-6 inline-block rounded-sm overflow-hidden'>
+                                                    <img className='w-full h-full' src={`data:${feed.icon.data}`} alt={`${feed.title} logo`} />
+                                                </span> : null
+                                            }
                                             <Link to='/feeds/$id/entries' params={{ id: feed.id.toString() }}>{feed.title}</Link>
                                         </CardTitle>
                                         <Button asChild variant='outline'>
                                             <Link className='underline' to='/feeds/$id' params={{ id: feed.id.toString() }}><Pen /></Link>
                                         </Button>
                                     </CardHeader>
-                                    <CardContent className='text-slate-400'>
+                                    {/* <CardContent className='text-slate-400'>
                                         {feed.description}
-                                        {/* <Dialog>
-                                            <DialogTrigger asChild>
-                                                <Button variant='destructive'>Delete</Button>
-                                            </DialogTrigger>
-                                            <DialogContent className='sm:max-w-[425px]'>
-                                                <DialogHeader>
-                                                    <DialogTitle>Are you sure?</DialogTitle>
-                                                    <DialogDescription>
-                                                        This action will delete chosen feed. Do you want to proceed?
-                                                    </DialogDescription>
-                                                </DialogHeader>
-                                                <div className='flex justify-center'>
-                                                    <Button variant='destructive' onClick={() => deleteMutation.mutate({ id: feed.id, iconId: feed.icon.icon_id })}>
-                                                        Delete
-                                                    </Button>
-                                                </div>
-                                            </DialogContent>
-                                        </Dialog> */}
-                                    </CardContent>
+                                    </CardContent> */}
                                 </Card>
                             )
                         })}

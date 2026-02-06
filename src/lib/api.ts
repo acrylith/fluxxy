@@ -1,6 +1,6 @@
 import { idxDB } from "./indexeddb"
 import axios from "axios"
-import type { createFeed, FeedIcon, updateFeed } from "./types"
+import type { createFeed, Feed, FeedIcon, updateFeed } from "./types"
 
 const basePath = import.meta.env.VITE_API_ENTRY
 const headers = {
@@ -14,30 +14,43 @@ const baseApi = axios.create({
     headers: { 'X-Auth-Token': import.meta.env.VITE_API_KEY }
 })
 
-const getIconIds = (data:any) => {
-    const ids:any = []
-    data?.map((entry: any) => {
-        if(!ids.includes(entry.feed.icon.icon_id)) {
-            ids.push(entry.feed.icon.icon_id)
-        }
-    })
-    return ids
-}
+async function pushIcons(data:any, target:'entry' | 'feed' = 'entry') {
+    const getIconIds = (data:any) => {
+        const ids:any = []
+        data?.map((entry: any) => {
+            if(!ids.includes(entry.feed.icon.icon_id)) {
+                ids.push(entry.feed.icon.icon_id)
+            }
+        })
+        return ids
+    }
 
-async function pushIcons(data:any) {
-    // const { entries } = data
-    const icons = await idxDB.icons.bulkGet(getIconIds(data.entries))
-    await data.entries.forEach((element:any) => {
-        const { icon_id } = element.feed.icon
-        const icon = icons.find((el:FeedIcon|any) => el?.id === icon_id)
-        if(icon !== null || undefined) {
-            element.feed.icon.data = icon?.data
-        } else {
-            element.feed.icon.data = null
-        }
-        
-    });
-    // console.log(entries)
+    if (target === 'entry') {
+        // console.log('target entry')
+        const icons = await idxDB.icons.bulkGet(getIconIds(data.entries))
+        await data.entries.forEach((element:any) => {
+            const { icon_id } = element.feed.icon
+            const icon = icons.find((el:FeedIcon|any) => el?.id === icon_id)
+            if(icon !== null || undefined) {
+                element.feed.icon.data = icon?.data
+            } else {
+                element.feed.icon.data = null
+            }
+            
+        });
+    } else if (target === 'feed') {
+        // console.log('target feed')
+        const icons = await idxDB.icons.toArray()
+        await data.forEach((element: any) => {
+            const { icon_id } = element.icon
+            const icon = icons.find((el:FeedIcon|any) => el?.id === icon_id)
+            if(icon !== null || undefined) {
+                element.icon.data = icon?.data
+            } else {
+                element.icon.data = null
+            }
+        })
+    }
     return data
 }
 
@@ -55,6 +68,7 @@ const api = {
                 method: 'GET',
                 headers: headers
             }).then(res => res.json())
+            .then(res => pushIcons(res, 'feed'))
             return data
         },
         getEntries: async (params: any) => {
